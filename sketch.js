@@ -1,22 +1,22 @@
 var nodes=[];
 var r_nodes=[];
 var u_nodes=[];
+var speed=[1.2,-1.2];
 function setup() {
   createCanvas(400, 400);
+  for(let i=0;i<40;i++)
+    nodes.push(new Node(random(390),random(390)));
 }
 
 function draw() {
-  background(70);
+  background(0);
   for(let i=0;i<nodes.length;i++)
   {
    nodes[i].display();
+    nodes[i].move();
   }
-}
-function mousePressed()
-{
-  nodes.push(new Node(mouseX,mouseY));
-  r_nodes.length=0;
-  u_nodes.length=0;
+    r_nodes=[];
+  u_nodes=[];
   for(let i=0;i<nodes.length;i++)
   {
     nodes[i].connections=[];
@@ -48,14 +48,21 @@ function mousePressed()
     u_nodes.splice(ui,1);
   }
 }
+function mousePressed()
+{
+  //nodes.push(new Node(mouseX,mouseY));
+}
 class Node
 {
   constructor(x,y)
   {
     this.x=x;
     this.y=y;
-    this.r=10;
+    this.r=3;
+    this.vx=speed[floor(random(2))];
+    this.vy=speed[floor(random(2))];
     this.connections=[];
+    this.col=color(0,255,0);
   }
   connect(obj)
   {
@@ -63,14 +70,34 @@ class Node
   }
   display()
   {
-    fill(255);
+    fill(this.col);
     noStroke();
     ellipse(this.x,this.y,2*this.r,2*this.r);
     for(let i=0;i<this.connections.length;i++)
     {
-      stroke(255); 
-      strokeWeight(3); 
-      line(this.x,this.y,this.connections[i].x,this.connections[i].y);   
+      stroke(this.col); 
+      strokeWeight(1);   line(this.x,this.y,this.connections[i].x,this.connections[i].y);   
     }
   } 
+  move()
+  {
+    this.x=this.x-this.vx;
+    this.y=this.y-this.vy;
+    if(this.x<this.r)
+    {
+      this.vx=this.vx*-1;
+    }
+        if(this.y<this.r)
+    {
+      this.vy=this.vy*-1;
+    }
+        if(this.x>width-this.r)
+    {
+      this.vx=this.vx*-1;
+    }
+        if(this.y>width-this.r)
+    {
+      this.vy=this.vy*-1;
+    }
+  }
 }
